@@ -1,16 +1,19 @@
  node{
 
+	   //def mavenHome = tool(/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven3.9.6/) 
+	  //==>is going to give path here only but mvn command available in the /bin/ directory
+	  	
+	  def mavenHome = tool name:"Maven3.9.6"
 
 	  echo "The node name is: ${env.NODE_NAME}"
 
 	  echo "The Job name is: ${env.JOB_NAME}"
 
-	  echo "The Build Number is: ${env.BUILD_NUMBER}"	
+	  echo "The Build Number is: ${env.BUILD_NUMBER}"
+
 properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: '']])
-	  //def mavenHome = tool(/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven3.9.6/) 
-	  //==>is going to give path here only but mvn command available in the /bin/ directory
-	  	
-	  def mavenHome = tool name:"Maven3.9.6"
+properties([[$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+
 	
 	 //Getting the code or Chechout stage	
 	 stage('CheckoutCode'){

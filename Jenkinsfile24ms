@@ -5,6 +5,9 @@
 	  	
 	  def mavenHome = tool name:"Maven3.9.6"
 
+	  buildName 'Mahi - ${BUILD_NUMBER}'
+	  buildDescription 'Pipele Script written by MS'
+	
 	  echo "The node name is: ${env.NODE_NAME}"
 
 	  echo "The Job name is: ${env.JOB_NAME}"

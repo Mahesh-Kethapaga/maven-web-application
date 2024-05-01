@@ -18,7 +18,14 @@ pipeline{
 		//ant ""
 	}
 
+	buildName 'Mahi - ${BUILD_NUMBER}'
+	  buildDescription 'Pipele Script written by MS'
 	
+	  echo "The node name is: ${env.NODE_NAME}"
+
+	  echo "The Job name is: ${env.JOB_NAME}"
+
+	  echo "The Build Number is: ${env.BUILD_NUMBER}"
 	options {
  		 
  		 buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')

@@ -1,0 +1,107 @@
+pipeline{
+
+	//For Specifying perticular Nodename
+
+	/*agent{
+	 label 'nodename'			
+	}*/
+
+
+	agent any
+	 // it will take the default node without mention node name also
+	
+	// we can use any tools here ex. gradle, java , ant and git
+	tools{
+	
+		maven "Maven3.9.6"
+		//git ""
+		//ant ""
+	}
+
+	
+	options {
+ 		 
+ 		 buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')
+  		 timestamps()
+	}
+
+	triggers {
+ 		
+ 		 pollSCM '* * * * *'
+		 cron '* * * * *'
+	}
+
+
+	stages{
+	  
+	  	//Get the code From Github 	
+	 	stage('ChechkOutCode'){
+	   	
+	   		steps{
+	   		
+	   			git branch: 'development', credentialsId: '6cfaa081-e697-448a-8bd0-22101123e699',
+	   			url: 'https://github.com/Mahesh-Kethapaga/maven-web-application.git'
+	   		}
+	   	}
+	   	
+	   	
+	   	//Do the Build	
+	 	stage('Build'){
+	   	
+	   		steps{
+	   		//In Declarative we don't want to define variabe, instead of write one block
+	   		
+	   			sh "mvn clean package"
+	   		}
+	        }
+	   	
+	   	
+	   	//Executing SonarQube Report
+	 	stage('GeneratingSonarQubeReport'){
+	   	
+	   		steps{
+	   		
+	   			sh "mvn sonar:sonar"
+	   		}
+	        }
+	   	
+	   	
+	   	//Uploading Artifact Into Artifact Repo
+	 	stage('UploadArtifactIntoNexus'){
+	   	
+	   		steps{
+	   		
+	   			sh "mvn deploy"
+	   		}
+	        }
+	        
+	        
+	        //Deploy App Into Tomcat Server
+	 	stage('DeployAppIntoTomcat'){
+	   	
+	   		steps{
+	   		
+	   			sshagent(['792eacc6-e53e-43e2-8815-0d1c20b2bb2e']) {
+ 				 //Give the permission for the /opt/tomcat/webapps folder
+ 			      sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@54.213.56.98:/opt/tomcat/webapps"
+				}
+	   		}
+	        }
+	   	
+        }//Stages Closing
+
+	/*
+	//This block we are going to add after stages. It will give the notification based on the status
+	post {
+		  always {
+		    // One or more steps need to be included within each condition's block.
+		  }
+		  success {
+		    // One or more steps need to be included within each condition's block.
+		  }
+		  failure {
+		    // One or more steps need to be included within each condition's block.
+		  }
+	}
+	*/
+}//Pipeline Closing

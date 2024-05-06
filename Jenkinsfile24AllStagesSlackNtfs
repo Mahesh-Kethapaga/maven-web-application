@@ -55,7 +55,7 @@ try {
 
 	 stage('CheckoutCode'){
 	 	// By default it is going to take the code from master branch. other than master branch we need to specify the branc name
-		
+		sendSlackNotifications('STARTED')
 		git branch: 'development', credentialsId: '6cfaa081-e697-448a-8bd0-22101123e699', url: 
 		'https://github.com/Mahesh-Kethapaga/maven-web-application.git'
 

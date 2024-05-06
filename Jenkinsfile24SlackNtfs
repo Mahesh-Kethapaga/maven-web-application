@@ -77,13 +77,13 @@ try {
 
 catch (Exception e) {
 
-	currenBuild.result = "FAILURE"
+	currentBuild.result = "FAILURE"
 
 	 throw e
 }
 finally {
 
-	sendSlackNotifications(currenBuild.result)	
+	sendSlackNotifications(currentBuild.result)	
 }
 
 

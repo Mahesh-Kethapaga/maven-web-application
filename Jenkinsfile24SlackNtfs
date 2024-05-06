@@ -1,4 +1,3 @@
-
 def sendSlackNotifications(String buildStatus = 'STARTED') {
   // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
@@ -24,6 +23,7 @@ def sendSlackNotifications(String buildStatus = 'STARTED') {
   // Send notifications
   slackSend (color: colorCode, message: summary)
 }
+
 
 node{
 
@@ -72,34 +72,7 @@ try {
 		
 	}
 	
-	//Generate SonarQube Report
-	 stage('SonarQubeReport'){
-	 
-	 	// Before executing this command 1st you should integrate sonarqube server details in the pom.xml          
-		sh "$mavenHome/bin/mvn sonar:sonar"	
-	}
 	
-	//Upload Artifact Into Artifact Repo
-	 stage('UploadArtifactIntoNexus'){
-	 
-	 	// Before executing this command 1st you should configure Nexus repo details         
-		sh "$mavenHome/bin/mvn deploy"	
-	}
-	
-	//Deploy App Into Tomcat Server
-	 stage('DeployAppIntoTomcat'){
-	 
-	//Deploying application into the Tomcat Server is nothing but copying this .war file into the webapps folder where tomcat installed
-		// To Copy file from one server to another server we use "SCP" Command and this command ask target server credentials
-		//Manually we are not able to give so we generate some token nd we use that token so for that one we are going to use
-		//SSHAgent plugin
-		//For Tomcat server we have username but don't have passwd for that we use Pem file , we also connet using pem file also
-		
-		sshagent(['792eacc6-e53e-43e2-8815-0d1c20b2bb2e']) {
-    		sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@54.213.56.98:/opt/tomcat/webapps"
-		}
-	}
-
 } //Try Block Closing
 
 catch (Exception e) {
